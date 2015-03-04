@@ -1,0 +1,23 @@
+/*.photo-detail {*/
+  /*padding:10px;*/
+  /*border:1px solid black;*/
+  /*background:white;*/
+/*}*/
+
+.photo-detail {
+  -webkit-transition:all linear 0.1s;
+  transition:all linear 0.1s;
+}
+
+.photo-detail.ng-hide {
+  opacity:0;
+}
+
+.photo-thumb.ng-enter {
+  -webkit-transition:all linear 0.1s;
+  transition:all linear 0.1s;
+}
+
+.photo-thumb.ng-leave {
+  opacity: 0;
+}

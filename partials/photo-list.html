@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li ng-class="{active: status == 'queued'}"><a href="#/photos/?type=queued">Queued</a></li>
+                <li ng-class="{active: status == 'sent'}"><a href="#/photos/?type=sent">Sent</a></li>
+                <li ng-class="{active: status == 'deleted'}"><a href="#/photos/?type=deleted">Deleted</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="container">
+                <div class="row" ng-hide="targetPhoto">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>{{message}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3 photo-thumb" ng-repeat="photo in photos">
+                            <a ng-href="" ng-click="showPhoto(photo.id)" class="thumbnail">
+                                <img ng-src="{{photo.url}}" alt="{{photo.name}}"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row photo-detail" ng-show="targetPhoto" ng-controller="PhotoDetailController">
+                    <div class="col-sm-12 col-md-12">
+                        <div>
+                            <p><a href="" ng-click="hidePhoto()">Back</a></p>
+                            <img ng-src="{{targetPhoto.url}}" alt=""/>
+                            <div class="tools" style="padding: 10px 0;">
+                                <button class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
