@@ -3,7 +3,8 @@
 var app = angular.module('photoQueueControllers', [
     'ngAnimate',
     'underscore',
-    'angularFileUpload'
+    'angularFileUpload',
+    'photoQueueResources'
 ]);
 
 var mock_photos = [
@@ -64,19 +65,53 @@ app.controller('IndexController', ['$scope', function ($scope) {
     console.log("asdfasdf");
 }]);
 
-app.controller('PhotoListController', ['$log', '$scope', '$location', '_', function ($log, $scope, $location, _) {
-    $scope.photos = mock_photos;
-    $scope.targetPhoto = null;
-    $scope.status = "queued";
-    $scope.message = "Loading...";
+app.controller('FileUploadController', ['$scope', '$upload', function ($scope, $upload) {
+    $scope.$watch('files', function () {
+        $scope.upload($scope.files);
+    });
 
-    $scope.init = function () {
-        $scope.status = $location.search().type;
-        $log.info($scope.status);
-        $scope.message = "Found " + $scope.photos.length + " images";
+    $scope.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                $upload.upload({
+                    url: 'upload/url',
+                    fields: {'username': $scope.username},
+                    file: file
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                }).success(function (data, status, headers, config) {
+                    console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+                });
+            }
+        }
+    };
+}]);
+
+app.controller('PhotoListController', ['$log', '$scope', '$location', '_', 'Photo', function ($log, $scope, $location, _, Photo) {
+
+    $scope.status = "queued";
+
+    var statusMap = {
+        'queued': 1,
+        'deleted': 0,
+        'sent': 2
     };
 
-    $scope.isPageActive = function(page) {
+    $scope.init = function () {
+        $scope.status = $location.search().status || 'queued';
+        $scope.targetPhoto = null;
+        $scope.message = "Loading...";
+
+        Photo.query({status: statusMap[$scope.status]}).$promise.then(function (photos) {
+            $scope.photos = photos;
+            $scope.message = "Found " + $scope.photos.length + " images";
+        });
+
+    };
+
+    $scope.isPageActive = function (page) {
         return page == $scope.status;
     };
 
